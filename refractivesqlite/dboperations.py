@@ -63,7 +63,7 @@ class Database:
             for r in results:
                 print("\t".join(map(str,r[:])))
         conn.close()
-        #return results
+        return results
 
     def search_id(self,pageid):
         info = self._get_page_info(pageid)
