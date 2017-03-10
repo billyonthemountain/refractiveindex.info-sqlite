@@ -224,7 +224,7 @@ class FormulaRefractiveIndexData:
         self.coefficients = coefficients
         self.interpolation_points = interpolation_points
 
-        if formula in [4,7,8,9]:
+        if formula in [7,8,9]:
             raise FormulaNotImplemented('Formula '+str(formula)+ ' not yet implemented')
 
     def get_complete_refractive(self):
@@ -263,8 +263,15 @@ class FormulaRefractiveIndexData:
                 for i in range(1, len(coefficients), 2):
                     nsq += g(coefficients[i], coefficients[i + 1], wavelength)
                 n = numpy.sqrt(nsq)
-            elif formula_type == 4:  # RefractiveIndex.INFO
-                raise FormulaNotImplemented('RefractiveIndex.INFO formula not yet implemented')
+            elif formula_type == 4:  # RefractiveIndex.
+                f = lambda c1, c2, c3, c4, w: c1 * (w ** c2) / (w ** 2 - c3 ** c4)
+                g = lambda c1, c2, w: c1 * w ** c2
+                nsq = coefficients[0]
+                for i in range(1, 9, 4):
+                    nsq += f(coefficients[i], coefficients[i+1], coefficients[i+2], coefficients[i+3], wavelength)
+                for i in range(9, len(coefficients), 2):
+                    nsq += g(coefficients[i], coefficients[i + 1], wavelength)
+                n = numpy.sqrt(nsq)
             elif formula_type == 5:  # Cauchy
                 g = lambda c1, c2, w: c1 * w ** c2
                 n = coefficients[0]
